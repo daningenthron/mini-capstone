@@ -3,5 +3,7 @@ Rails.application.routes.draw do
   namespace :v1 do
     get "/all_products" => "products#display_all_products"
     get "/random_product" => "products#display_random_product"
+    get "/product/:id" => "products#display_product"
+    get "/product" => "products#display_product"
   end
 end

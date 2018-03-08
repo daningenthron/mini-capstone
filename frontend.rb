@@ -12,15 +12,15 @@ puts "[3] Check them out in a table"
 input = gets.chomp
 
 if input == "1"
-  response = Unirest.get("http://localhost:3000/all_products")
+  response = Unirest.get("http://localhost:3000/v1/all_products")
   products = response.body
   puts JSON.pretty_generate(products)
 elsif input == "2"
-  response = Unirest.get("http://localhost:3000/random_product")
+  response = Unirest.get("http://localhost:3000/v1/random_product")
   product = response.body
   puts JSON.pretty_generate(product)
 elsif input == "3"
-  response = Unirest.get("http://localhost:3000/all_products")
+  response = Unirest.get("http://localhost:3000/v1/all_products")
   products = response.body
   table = TTY::Table.new [['id','artist','title','media','price']]
   products.each { |product|
