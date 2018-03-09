@@ -9,9 +9,10 @@ puts "[1] View all available albums"
 puts "[2] View an album at random"
 puts "[3] Check them out in a table"
 puts "[4] Add a new album"
+puts "[5] Update an album"
 
 image_hash = {
-  "John Coltrane" => "./images/coltrane.jpg", "Led Zeppelin" => "./images/led_zeppelin.jpg", "Pearl Jam" => "./images/pearl_jam.jpg", "Radiohead" => "./images/radiohead.jpg"
+  "John Coltrane" => "./images/coltrane.jpg", "Led Zeppelin" => "./images/led_zeppelin.jpg", "Pearl Jam" => "./images/pearl_jam.jpg", "Radiohead" => "./images/radiohead.jpg", "The Beatles" => "./images/the_beatles.jpg", "Wilco" => "./images/wilco.jpg"
   }
 
 input = gets.chomp
@@ -34,25 +35,40 @@ elsif input == "3"
     table << [product["id"],product["artist"],product["title"],product["media"],product["price"]] }
   puts table.render(:ascii)
 elsif input == "4"
+  params = {}
   print "Album artist? "
-  input_artist = gets.chomp
+  params["artist"] = gets.chomp
   print "Album title? "
-  input_title = gets.chomp
+  params["title"] = gets.chomp
   print "LP or CD? "
-  input_media = gets.chomp
+  params["media"] = gets.chomp
   print "How much ($)? "
-  input_price = gets.chomp
+  params["price"] = gets.chomp
   print "URL of the album cover? "
-  input_url = gets.chomp
+  params["image_url"] = gets.chomp
 
-  params = {
-    artist: input_artist, 
-    title: input_title, 
-    media: input_media, 
-    price: input_price, 
-    image_url: input_url
-  }
   response = Unirest.post("http://localhost:3000/v1/products", parameters: params)
+  product = response.body
+  puts JSON.pretty_generate(product)
+elsif input == "5"
+  print "Enter an album id: "
+  id = gets.chomp
+  response = Unirest.get("http://localhost:3000/v1/products/#{id}")
+  product = response.body
+  params = {}
+  print "Album artist? (RETURN to leave as #{product["artist"]}) "
+  params["artist"] = gets.chomp
+  print "Album title? (RETURN to leave as #{product["title"]}) "
+  params["title"] = gets.chomp
+  print "LP or CD? (RETURN to leave as #{product["media"]}) "
+  params["media"] = gets.chomp
+  print "How much ($)? (RETURN to leave as #{product["price"]}) "
+  params["price"] = gets.chomp
+  print "URL of the album cover? (RETURN to leave as #{product["image_url"]}) "
+  params["image_url"] = gets.chomp
+  params.delete_if { |key, value| value.empty? }
+
+  response = Unirest.patch("http://localhost:3000/v1/products/#{id}", parameters: params)
   product = response.body
   puts JSON.pretty_generate(product)
 end
