@@ -6,5 +6,6 @@ Rails.application.routes.draw do
     get "/products/random" => "products#show_random"
     get "/products/:id" => "products#show"
     patch "/products/:id" => "products#update"
+    delete "/products/:id" => "products#destroy"
   end
 end
