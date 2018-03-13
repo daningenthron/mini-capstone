@@ -18,10 +18,10 @@ if input == "1"
   response = Unirest.get("http://localhost:3000/v1/products")
   products = response.body
   products.sort_by { | product | product["id"]}.each { | product | 
-   puts JSON.pretty_generate(product)
-   image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-   puts `/usr/local/bin/imgcat #{image}`
-   }
+    puts JSON.pretty_generate(product)
+    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
+    puts `/usr/local/bin/imgcat #{image}`
+  }
 elsif input == "2"
   response = Unirest.get("http://localhost:3000/v1/products/random")
   product = response.body
