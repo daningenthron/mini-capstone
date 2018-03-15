@@ -1,7 +1,18 @@
 class V1::ProductsController < ApplicationController
-  
+  def sort_key
+    if params["sort_by"] == "price"
+      :price
+    else
+      :id
+    end
+  end
+
   def index
-    products = Product.all.order(:id)
+    products = Product.order(sort_key) 
+    search_artist = params["search_artist"]
+    if search_artist
+      products = products.where("artist ILIKE ?", "%#{search_artist}%")
+    end
     render json: products.as_json
   end
 

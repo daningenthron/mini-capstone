@@ -6,7 +6,9 @@ system "clear"
 puts "Welcome to World Records!!"
 puts "Choose from one of the following options:"
 puts "[1] View all available albums"
-puts "[2] View an album at random"
+puts "[1.1] Search by price, low to high"
+puts "[2.1] View an album at random"
+puts "[2.2] Search by artist"
 puts "[3] Check them out in a table"
 puts "[4] Add a new album"
 puts "[5] Update an album"
@@ -17,17 +19,36 @@ input = gets.chomp
 if input == "1"
   response = Unirest.get("http://localhost:3000/v1/products")
   products = response.body
-  products.sort_by { | product | product["id"]}.each { | product | 
+  products.each { | product | 
     puts JSON.pretty_generate(product)
     image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
     puts `/usr/local/bin/imgcat #{image}`
   }
-elsif input == "2"
+elsif input == "1.1"
+  response = Unirest.get("http://localhost:3000/v1/products?sort_by=price")
+  products = response.body
+  products.each { | product | 
+    puts JSON.pretty_generate(product)
+    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
+    puts `/usr/local/bin/imgcat #{image}`
+  }
+elsif input == "2.1"
   response = Unirest.get("http://localhost:3000/v1/products/random")
   product = response.body
   puts JSON.pretty_generate(product)
   image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
   puts `/usr/local/bin/imgcat #{image}`
+elsif input == "2.2"
+  params = {}
+  print "Enter artist: "
+  params["search_artist"] = gets.chomp
+  response = Unirest.get("http://localhost:3000/v1/products", parameters: params)
+  products = response.body
+  products.each { | product | 
+    puts JSON.pretty_generate(product)
+    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
+    puts `/usr/local/bin/imgcat #{image}`
+  }
 elsif input == "3"
   response = Unirest.get("http://localhost:3000/v1/products")
   products = response.body
