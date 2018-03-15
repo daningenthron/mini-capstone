@@ -1,4 +1,9 @@
 class Product < ApplicationRecord
+  validates :artist, :title, :price, :description, presence: true
+  validates :price, numericality: { greater_than: 0.0 }
+  validates :description, length: { in: 10..500 }
+  validates :title, uniqueness: { scope: [:artist, :media], message: "is already listed!" }
+
   def friendly_created_at
     created_at.strftime("%m-%e-%y %H:%M")
   end
@@ -33,6 +38,7 @@ class Product < ApplicationRecord
       tax: tax,
       total: total,
       is_discounted: is_discounted,
+      description: description,
       image_url: image_url,
       created_at: friendly_created_at,
       updated_at: friendly_updated_at

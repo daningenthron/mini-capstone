@@ -45,15 +45,22 @@ elsif input == "4"
   params["media"] = gets.chomp
   print "How much ($)? "
   params["price"] = gets.chomp
+  print "Description? "
+  params["description"] = gets.chomp
   print "URL of the album cover? "
   params["image_url"] = gets.chomp
 
   response = Unirest.post("http://localhost:3000/v1/products", parameters: params)
   product = response.body
-  image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-  `wget --output-document=#{image} #{product["image_url"]}`
-  puts JSON.pretty_generate(product)
-  puts `/usr/local/bin/imgcat #{image}`
+  if product["errors"]
+    puts "Uh oh! Something went wrong..."
+    p product["errors"]
+  else
+    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
+    `wget --output-document=#{image} #{product["image_url"]}`
+    puts JSON.pretty_generate(product)
+    puts `/usr/local/bin/imgcat #{image}`
+  end
 elsif input == "5"
   print "Enter an album id: "
   id = gets.chomp
@@ -70,13 +77,21 @@ elsif input == "5"
   params["price"] = gets.chomp
   print "URL of the album cover? (RETURN to leave as #{product["image_url"]}) "
   params["image_url"] = gets.chomp
+  print "Description? (RETURN to leave as #{product["description"]}) "
+  params["description"] = gets.chomp
   params.delete_if { |_key, value| value.empty? }
 
   response = Unirest.patch("http://localhost:3000/v1/products/#{id}", parameters: params)
   product = response.body
-  puts JSON.pretty_generate(product)
-  image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-  puts `/usr/local/bin/imgcat #{image}`
+  if product["errors"]
+    puts "Uh oh! Something went wrong..."
+    p product["errors"]
+  else
+    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
+    `wget --output-document=#{image} #{product["image_url"]}`
+    puts JSON.pretty_generate(product)
+    puts `/usr/local/bin/imgcat #{image}`
+  end
 elsif input == "6"
   print "Enter an album id: "
   product_id = gets.chomp

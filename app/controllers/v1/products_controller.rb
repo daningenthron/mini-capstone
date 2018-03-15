@@ -1,19 +1,24 @@
 class V1::ProductsController < ApplicationController
   
   def index
-    products = Product.all
+    products = Product.all.order(:id)
     render json: products.as_json
   end
 
   def create
-    product = Product.create(
+    product = Product.new(
       artist: params["artist"], 
       title: params["title"], 
       media: params["media"], 
       price: params["price"], 
+      description: params["description"],
       image_url: params["image_url"]
       )
-    render json: product.as_json
+    if product.save
+      render json: product.as_json
+    else
+      render json: {errors: product.errors.full_messages}, status: 422
+    end
   end
 
   def show_random
@@ -35,9 +40,13 @@ class V1::ProductsController < ApplicationController
     product.title = params["title"] || product.title
     product.media = params["media"] || product.media
     product.price = params["price"] || product.price
+    product.description = params["description"] || product.description
     product.image_url = params["image_url"] || product.image_url
-    product.save
-    render json: product.as_json
+    if product.save
+      render json: product.as_json
+    else
+      render json: {errors: product.errors.full_messages}, status: 422
+    end
   end
 
   def destroy
