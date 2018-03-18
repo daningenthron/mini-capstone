@@ -7,5 +7,11 @@ Rails.application.routes.draw do
     get "/products/:id" => "products#show"
     patch "/products/:id" => "products#update"
     delete "/products/:id" => "products#destroy"
+
+    get "/labels" => "labels#index"
+    post "/labels" => "labels#create"
+    get "/labels/:id" => "labels#show"
+    patch "/labels/:id" => "labels#update"
+    delete "/labels/:id" => "labels#destroy"
   end
 end

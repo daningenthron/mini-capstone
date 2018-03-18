@@ -20,6 +20,10 @@ class Product < ApplicationRecord
     end
   end
 
+  def label
+    Label.find_by(id: label_id)["name"]
+  end
+
   def tax
     (price * 0.09).round(2)
   end
@@ -33,6 +37,7 @@ class Product < ApplicationRecord
       id: id,
       artist: artist,
       title: title,
+      label: label,
       media: media,
       price: price,
       tax: tax,
