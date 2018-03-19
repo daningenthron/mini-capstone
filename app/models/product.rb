@@ -12,6 +12,12 @@ class Product < ApplicationRecord
     updated_at.strftime("%m-%e-%y %H:%M")
   end
 
+  #a product has many images
+  has_many :images
+  # def images
+  #   Image.where(product_id: id)
+  # end
+
   def is_discounted
     if media == "LP"
       price < 45
@@ -20,9 +26,11 @@ class Product < ApplicationRecord
     end
   end
 
-  def label
-    Label.find_by(id: label_id)["name"]
-  end
+  #a product belongs to a label
+  belongs_to :label
+  # def label
+  #   Label.find_by(id: label_id)
+  # end
 
   def tax
     (price * 0.09).round(2)
@@ -37,14 +45,14 @@ class Product < ApplicationRecord
       id: id,
       artist: artist,
       title: title,
-      label: label,
+      label: label.as_json,
       media: media,
       price: price,
       tax: tax,
       total: total,
       is_discounted: is_discounted,
       description: description,
-      image_url: image_url,
+      image_url: images.map { |image| image["url"]},
       created_at: friendly_created_at,
       updated_at: friendly_updated_at
     }

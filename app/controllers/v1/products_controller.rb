@@ -22,10 +22,11 @@ class V1::ProductsController < ApplicationController
       title: params[:title], 
       media: params[:media], 
       price: params[:price], 
-      description: params[:description],
-      image_url: params[:image_url]
+      description: params[:description]
       )
     if product.save
+      # image = Image.new(url: params[:image_url], product_id: product.id)
+      # Image.save
       render json: product.as_json
     else
       render json: {errors: product.errors.full_messages}, status: 422
@@ -52,8 +53,9 @@ class V1::ProductsController < ApplicationController
     product.media = params[:media] || product.media
     product.price = params[:price] || product.price
     product.description = params[:description] || product.description
-    product.image_url = params[:image_url] || product.image_url
     if product.save
+      # image = Image.new(url: params[:image_url], product_id: product.id)
+      # Image.save      
       render json: product.as_json
     else
       render json: {errors: product.errors.full_messages}, status: 422
