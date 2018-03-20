@@ -1,9 +1,27 @@
 require "unirest"
 require "tty-table"
 
+puts "Log in!"
+print "Email: "
+email = gets.chomp
+print "Password: "
+password = gets.chomp
+response = Unirest.post("http://localhost:3000/user_token", 
+  parameters: {
+    auth: {
+      email: email,
+      password: password
+    }
+  }
+)
+jwt = response.body["jwt"]
+Unirest.default_header("Authorization", "Bearer #{jwt}")
+
 system "clear"
+puts "Your JSON web token is #{jwt}"
 
 puts "Welcome to World Records!!"
+puts
 puts "Choose from one of the following options:"
 puts "[1] View all available albums"
 puts "[1.1] Search by price, low to high"
@@ -13,6 +31,8 @@ puts "[3] Check them out in a table"
 puts "[4] Add a new album"
 puts "[5] Update an album"
 puts "[6] Delete an album"
+puts
+puts "Or, 'sign up'."
 
 input = gets.chomp
 
@@ -119,4 +139,18 @@ elsif input == "6"
   response = Unirest.delete("http://localhost:3000/v1/products/#{id}")
   body = response.body
   puts JSON.pretty_generate(body)
+elsif ["sign up", "signup", "'sign up'", "'signup'"].include? input.downcase
+  params = {}
+  print "Name: "
+  params["name"] = gets.chomp
+  print "Email: "
+  params["email"] = gets.chomp
+  print "Password: "
+  params["password"] = gets.chomp
+  print "Confirm password: "
+  params["password_confirmation"] = gets.chomp
+
+  response = Unirest.post("http://localhost:3000/v1/users", parameters: params)
+  p response.body
+
 end

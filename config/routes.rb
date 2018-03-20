@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  post 'user_token' => 'user_token#create'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   namespace :v1 do
     get "/products" => "products#index"
@@ -13,5 +14,7 @@ Rails.application.routes.draw do
     get "/labels/:id" => "labels#show"
     patch "/labels/:id" => "labels#update"
     delete "/labels/:id" => "labels#destroy"
+
+    post "/users" => "users#create"
   end
 end
