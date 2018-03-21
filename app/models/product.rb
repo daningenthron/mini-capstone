@@ -4,6 +4,10 @@ class Product < ApplicationRecord
   validates :description, length: { in: 10..500 }
   validates :title, uniqueness: { scope: [:artist, :media], message: "is already listed!" }
 
+  belongs_to :label
+  has_many :images
+  has_many :orders
+
   def friendly_created_at
     created_at.strftime("%m-%e-%y %H:%M")
   end
@@ -12,12 +16,6 @@ class Product < ApplicationRecord
     updated_at.strftime("%m-%e-%y %H:%M")
   end
 
-  #a product has many images
-  has_many :images
-  # def images
-  #   Image.where(product_id: id)
-  # end
-
   def is_discounted
     if media == "LP"
       price < 45
@@ -25,12 +23,6 @@ class Product < ApplicationRecord
       price < 20
     end
   end
-
-  #a product belongs to a label
-  belongs_to :label
-  # def label
-  #   Label.find_by(id: label_id)
-  # end
 
   def tax
     (price * 0.09).round(2)
