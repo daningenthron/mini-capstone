@@ -3,9 +3,9 @@ require "tty-table"
 
 puts "Log in!"
 print "Email: "
-email = gets.chomp
+email = "bob@email.com"
 print "Password: "
-password = gets.chomp
+password = "password"
 response = Unirest.post("http://localhost:3000/user_token", 
   parameters: {
     auth: {
@@ -31,6 +31,9 @@ puts "[3] Check them out in a table"
 puts "[4] Add a new album"
 puts "[5] Update an album"
 puts "[6] Delete an album"
+puts "[7] Buy an album"
+puts "[8] View your orders"
+puts "[9] Destroy an order"
 puts
 puts "Or, 'sign up'."
 
@@ -139,6 +142,26 @@ elsif input == "6"
   response = Unirest.delete("http://localhost:3000/v1/products/#{id}")
   body = response.body
   puts JSON.pretty_generate(body)
+elsif input == "7"
+  params = {}
+  print "Product Id: "
+  params["product_id"] = gets.chomp
+  print "Quantity: "
+  params["quantity"] = gets.chomp 
+  response = Unirest.post("http://localhost:3000/v1/orders", parameters: params)
+  p response.body
+elsif input == "8"
+  puts "Here are your orders:"
+  response = Unirest.get("http://localhost:3000/v1/orders")
+  orders = response.body
+  puts JSON.pretty_generate(orders)
+elsif input == "9"
+  puts "Order id? "
+  id = gets.chomp
+  response = Unirest.delete("http://localhost:3000/v1/orders/#{id}")
+  body = response.body
+  puts JSON.pretty_generate(body)
+
 elsif ["sign up", "signup", "'sign up'", "'signup'"].include? input.downcase
   params = {}
   print "Name: "
@@ -151,6 +174,6 @@ elsif ["sign up", "signup", "'sign up'", "'signup'"].include? input.downcase
   params["password_confirmation"] = gets.chomp
 
   response = Unirest.post("http://localhost:3000/v1/users", parameters: params)
-  p response.body
-
+  order = response.body
+  puts JSON.pretty_generate(order)
 end
