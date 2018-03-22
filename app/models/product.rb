@@ -4,9 +4,15 @@ class Product < ApplicationRecord
   validates :description, length: { in: 10..500 }
   validates :title, uniqueness: { scope: [:artist, :media], message: "is already listed!" }
 
+  has_many :category_products
   belongs_to :label
   has_many :images
   has_many :orders
+  has_many :categories, through: :category_products
+
+  def category_names
+    categories.map { |category| category.name }
+  end
 
   def friendly_created_at
     created_at.strftime("%m-%e-%y %H:%M")
@@ -39,6 +45,7 @@ class Product < ApplicationRecord
       title: title,
       label: label.as_json,
       media: media,
+      categories: category_names,
       price: price,
       tax: tax,
       total: total,

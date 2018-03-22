@@ -1,4 +1,6 @@
 class V1::ProductsController < ApplicationController
+  before_action :authenticate_admin, except: [:index, :show, :show_random]
+
   def sort_key
     if params["sort_by"] == "price"
       :price
@@ -20,6 +22,7 @@ class V1::ProductsController < ApplicationController
     product = Product.new(
       artist: params[:artist], 
       title: params[:title], 
+      label: params[:label],
       media: params[:media], 
       price: params[:price], 
       description: params[:description]
@@ -29,7 +32,7 @@ class V1::ProductsController < ApplicationController
       # Image.save
       render json: product.as_json
     else
-      render json: {errors: product.errors.full_messages}, status: 422
+      render json: {errors: product.errors.full_messages}, status: :unprocessable_entity
     end
   end
 
@@ -58,7 +61,7 @@ class V1::ProductsController < ApplicationController
       # Image.save      
       render json: product.as_json
     else
-      render json: {errors: product.errors.full_messages}, status: 422
+      render json: {errors: product.errors.full_messages}, status: :unprocessable_entity
     end
   end
 

@@ -44,23 +44,20 @@ if input == "1"
   products = response.body
   products.each { | product | 
     puts JSON.pretty_generate(product)
-    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-    puts `/usr/local/bin/imgcat #{image}`
+    product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
   }
 elsif input == "1.1"
   response = Unirest.get("http://localhost:3000/v1/products?sort_by=price")
   products = response.body
   products.each { | product | 
     puts JSON.pretty_generate(product)
-    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-    puts `/usr/local/bin/imgcat #{image}`
+    product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat --width=300` }
   }
 elsif input == "2.1"
   response = Unirest.get("http://localhost:3000/v1/products/random")
   product = response.body
   puts JSON.pretty_generate(product)
-  image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-  puts `/usr/local/bin/imgcat #{image}`
+  product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
 elsif input == "2.2"
   params = {}
   print "Enter artist: "
@@ -69,15 +66,14 @@ elsif input == "2.2"
   products = response.body
   products.each { | product | 
     puts JSON.pretty_generate(product)
-    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-    puts `/usr/local/bin/imgcat #{image}`
+    product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
   }
 elsif input == "3"
   response = Unirest.get("http://localhost:3000/v1/products")
   products = response.body
-  table = TTY::Table.new [['id','artist','title','media','price']]
+  table = TTY::Table.new [['id','artist','title','label','media','price']]
   products.each { |product|
-    table << [product["id"],product["artist"],product["title"],product["media"],product["price"]] }
+    table << [product["id"],product["artist"],product["title"],product["label"]["name"],product["media"],product["price"]] }
   puts table.render(:ascii)
 elsif input == "4"
   params = {}
@@ -100,10 +96,8 @@ elsif input == "4"
     puts "Uh oh! Something went wrong..."
     p product["errors"]
   else
-    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-    `wget --output-document=#{image} #{product["image_url"]}`
     puts JSON.pretty_generate(product)
-    puts `/usr/local/bin/imgcat #{image}`
+    product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
   end
 elsif input == "5"
   print "Enter an album id: "
@@ -131,10 +125,8 @@ elsif input == "5"
     puts "Uh oh! Something went wrong..."
     p product["errors"]
   else
-    image = "./images/" + product["artist"].gsub(" ","_").downcase + ".jpg"
-    `wget --output-document=#{image} #{product["image_url"]}`
     puts JSON.pretty_generate(product)
-    puts `/usr/local/bin/imgcat #{image}`
+    product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
   end
 elsif input == "6"
   print "Enter an album id: "
