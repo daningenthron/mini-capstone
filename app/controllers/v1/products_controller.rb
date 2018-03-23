@@ -15,6 +15,11 @@ class V1::ProductsController < ApplicationController
     if search_artist
       products = products.where("artist ILIKE ?", "%#{search_artist}%")
     end
+    input_category = params[:category]
+    if input_category
+      category = Category.find_by(name:input_category)
+      products = category.products
+    end
     render json: products.as_json
   end
 

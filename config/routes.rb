@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   post 'user_token' => 'user_token#create'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   namespace :v1 do
+    post "/carted_products" => "carted_products#create"
+
     get "/labels" => "labels#index"
     post "/labels" => "labels#create"
     get "/labels/:id" => "labels#show"

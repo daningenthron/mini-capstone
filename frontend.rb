@@ -25,15 +25,17 @@ puts
 puts "Choose from one of the following options:"
 puts "[1] View all available albums"
 puts "[1.1] Search by price, low to high"
+puts "[1.2] Search by category"
 puts "[2.1] View an album at random"
 puts "[2.2] Search by artist"
 puts "[3] Check them out in a table"
 puts "[4] Add a new album"
 puts "[5] Update an album"
 puts "[6] Delete an album"
-puts "[7] Buy an album"
-puts "[8] View your orders"
-puts "[9] Destroy an order"
+puts "[7] Add item to cart"
+puts "[8] Buy an album"
+puts "[9] View your orders"
+puts "[10] Destroy an order"
 puts
 puts "Or, 'sign up'."
 
@@ -53,6 +55,13 @@ elsif input == "1.1"
     puts JSON.pretty_generate(product)
     product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat --width=300` }
   }
+elsif input == "1.2"
+  print "Which category would you like to see? "
+  input_category = gets.chomp
+  response = Unirest.get("http://localhost:3000/v1/products?Category=#{input_category}")
+  product = response.body
+  puts JSON.pretty_generate(product)
+  product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
 elsif input == "2.1"
   response = Unirest.get("http://localhost:3000/v1/products/random")
   product = response.body
@@ -140,14 +149,20 @@ elsif input == "7"
   params["product_id"] = gets.chomp
   print "Quantity: "
   params["quantity"] = gets.chomp 
+  response = Unirest.post("http://localhost:3000/v1/carted_products", parameters: params)
+  carted_product = response.body
+  puts "Added to cart:"
+  puts JSON.pretty_generate(carted_product)
+elsif input == "8"
+  params = {}
   response = Unirest.post("http://localhost:3000/v1/orders", parameters: params)
   p response.body
-elsif input == "8"
+elsif input == "9"
   puts "Here are your orders:"
   response = Unirest.get("http://localhost:3000/v1/orders")
   orders = response.body
   puts JSON.pretty_generate(orders)
-elsif input == "9"
+elsif input == "10"
   puts "Order id? "
   id = gets.chomp
   response = Unirest.delete("http://localhost:3000/v1/orders/#{id}")

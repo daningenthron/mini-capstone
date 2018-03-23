@@ -4,12 +4,16 @@ class Product < ApplicationRecord
   validates :description, length: { in: 10..500 }
   validates :title, uniqueness: { scope: [:artist, :media], message: "is already listed!" }
 
-  has_many :category_products
   belongs_to :label
-  has_many :images
-  has_many :orders
-  has_many :categories, through: :category_products
 
+  has_many :category_products
+  has_many :categories, through: :category_products
+  
+  has_many :carted_products
+  has_many :orders, through: :carted_products
+
+  has_many :images
+  
   def category_names
     categories.map { |category| category.name }
   end
