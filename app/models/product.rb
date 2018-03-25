@@ -47,7 +47,7 @@ class Product < ApplicationRecord
       id: id,
       artist: artist,
       title: title,
-      label: label.as_json,
+      label: label.name,
       media: media,
       categories: category_names,
       price: price,

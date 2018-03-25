@@ -1,4 +1,5 @@
 class V1::CartedProductsController < ApplicationController
+  before_action :authenticate_user
 
   def create
     carted_product = CartedProduct.new(
@@ -14,4 +15,15 @@ class V1::CartedProductsController < ApplicationController
     end
   end
 
+  def index
+    carted_products = current_user.carted_products.where("status = 'carted'")
+    render json: carted_products.as_json
+  end
+
+  def destroy
+    carted_product = CartedProduct.find_by(id: params[:id])
+    carted_product.status = "removed"
+    carted_product.save
+    render json: {status: "Carted product successfully removed!"}
+  end
 end
