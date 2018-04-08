@@ -16,10 +16,14 @@ body {
 }
 
 .navbar-brand {
-  font-family: 'Poiret One', cursive;
+  font-family: "Poiret One", cursive;
   font-size: 32pt;
 }
 
 .jumbotron p {
   font-size: 16pt;
+}
+
+p span {
+  display: inline;
 }
