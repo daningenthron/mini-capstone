@@ -1,0 +1,25 @@
+body {
+  background-image: url("linedpaper.png");
+  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+  margin-bottom: 20px;
+}
+
+.btn-outline-success {
+  border-color: gray;
+  color: gray;
+}
+
+.btn-outline-success:hover {
+  background-color: black;
+  border-color: gray;
+  color: white;
+}
+
+.navbar-brand {
+  font-family: 'Poiret One', cursive;
+  font-size: 32pt;
+}
+
+.jumbotron p {
+  font-size: 16pt;
+}

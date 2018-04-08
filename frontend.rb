@@ -22,7 +22,7 @@ system "clear"
 until input.downcase == "q"
   puts "Your JSON web token is #{jwt}"
 
-  puts "Welcome to World Records!!"
+  puts "Welcome to Hello World Records!!"
   puts
   puts "Choose from one of the following options: (Q to quit)"
   puts "[1] View all available albums"
@@ -36,6 +36,7 @@ until input.downcase == "q"
   puts "[6] Delete an album"
   puts "[7] Add item to cart"
   puts "[8] View your cart"
+  puts "[9] Remove item from your cart"
   puts "[10] Checkout"
   puts "[11] View your orders"
   puts "[12] Destroy an order"
@@ -49,14 +50,14 @@ until input.downcase == "q"
     products = response.body
     products.each { | product | 
       puts JSON.pretty_generate(product)
-      product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
+      product["image_url"].each { |url| puts `curl -s "#{url}" | imgcat` }
     }
   elsif input == "1.1"
     response = Unirest.get("http://localhost:3000/v1/products?sort_by=price")
     products = response.body
     products.each { | product | 
       puts JSON.pretty_generate(product)
-      product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat --width=300` }
+      product["image_url"].each { |url| puts `curl -s "#{url}" | imgcat --width=300` }
     }
   elsif input == "1.2"
     print "Which category would you like to see? "
@@ -64,12 +65,12 @@ until input.downcase == "q"
     response = Unirest.get("http://localhost:3000/v1/products?Category=#{input_category}")
     product = response.body
     puts JSON.pretty_generate(product)
-    product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
+    product["image_url"].each { |url| puts `curl -s "#{url}" | imgcat` }
   elsif input == "2.1"
     response = Unirest.get("http://localhost:3000/v1/products/random")
     product = response.body
     puts JSON.pretty_generate(product)
-    product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
+    product["image_url"].each { |url| puts `curl -s "#{url}" | imgcat` }
   elsif input == "2.2"
     params = {}
     print "Enter artist: "
@@ -78,7 +79,7 @@ until input.downcase == "q"
     products = response.body
     products.each { | product | 
       puts JSON.pretty_generate(product)
-      product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
+      product["image_url"].each { |url| puts `curl -s "#{url}" | imgcat` }
     }
   elsif input == "3"
     response = Unirest.get("http://localhost:3000/v1/products")
@@ -109,7 +110,7 @@ until input.downcase == "q"
       p product["errors"]
     else
       puts JSON.pretty_generate(product)
-      product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
+      product["image_url"].each { |url| puts `curl -s "#{url}" | imgcat` }
     end
   elsif input == "5"
     print "Enter an album id: "
@@ -138,7 +139,7 @@ until input.downcase == "q"
       p product["errors"]
     else
       puts JSON.pretty_generate(product)
-      product["image_url"].each { |url| puts `curl -s #{"#{url}"} | imgcat` }
+      product["image_url"].each { |url| puts `curl -s "#{url}" | imgcat` }
     end
   elsif input == "6"
     print "Enter an album id: "
@@ -159,8 +160,13 @@ until input.downcase == "q"
   elsif input == "8"
     response = Unirest.get("http://localhost:3000/v1/carted_products")
     carted_products = response.body
+    # puts JSON.pretty_generate(carted_products)
+
     puts "Your cart:"
-    puts JSON.pretty_generate(carted_products)
+    table = TTY::Table.new [['id','artist','title','media','price']]
+    carted_products.each { |cp|
+      table << [cp["id"],cp["product"]["artist"],cp["product"]["title"],cp["product"]["media"],cp["product"]["price"]] }
+    puts table.render(:ascii)
   elsif input == "9"
     print "Enter product id to remove: "
     id = gets.chomp
